@@ -8,14 +8,16 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  Res, // <-- Adicione aqui
+  HttpStatus,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { ImagesService } from './images.service';
-
+import express from 'express';
 @Controller('api/images')
 export class ImagesController {
-  constructor(private readonly imagesService: ImagesService) {}
+  constructor(private readonly imagesService: ImagesService) { }
 
   // POST /api/images/upload
   // Recebe a imagem e envia para o bucket
@@ -62,5 +64,26 @@ export class ImagesController {
   @HttpCode(204)
   async deletar(@Param('key') key: string) {
     await this.imagesService.deletarImagem(decodeURIComponent(key));
+  }
+
+
+  @Get('url/*')
+  async redirecionarParaImagem(@Param('0') key: string, @Res() res: express.Response) {
+    try {
+      // O NestJS guarda o que cair no asterisco (*) dentro do Param('0')
+      // Decodificamos caso o navegador envie %20 em vez de espaço, etc.
+      const chaveDecodificada = decodeURIComponent(key);
+
+      // Chama o método que já existe no seu ImagesService
+      const url = await this.imagesService.gerarUrlVisualizacaoSegura(chaveDecodificada);
+
+      // Faz o redirect (HTTP 302 Found) diretamente para a URL assinada do S3
+      return res.redirect(HttpStatus.FOUND, url);
+    } catch (error) {
+      // Se a imagem não for encontrada ou der erro, retorna 500 ou 404
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        error: error instanceof Error ? error.message : 'Falhou',
+      });
+    }
   }
 }
