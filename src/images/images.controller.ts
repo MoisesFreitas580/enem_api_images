@@ -6,16 +6,24 @@ import { ImagesService } from './images.service';
 export class ImagesController {
   constructor(private readonly imagesService: ImagesService) {}
 
-  // 1. Atualizado: Demos o nome 'caminho' para o asterisco
   @Get('url/*caminho') 
   async buscarImagemDireta(
-    @Param('caminho') key: string, // 2. Atualizado: Pegamos o parâmetro pelo nome
+    @Param('caminho') caminho: string | string[], // <-- Pode vir como string ou array
     @Res() res: express.Response
   ) {
     try {
-      const chaveDecodificada = decodeURIComponent(key);
+      // O SEGREDO ESTÁ AQUI:
+      // Se for um array, juntamos com '/'. 
+      // Se for uma string que o Nest já transformou com vírgulas, trocamos por '/'
+      let chaveCorrigida = Array.isArray(caminho) 
+        ? caminho.join('/') 
+        : caminho.split(',').join('/');
+
+      // Decodifica a chave e gera a URL
+      const chaveDecodificada = decodeURIComponent(chaveCorrigida);
       const url = await this.imagesService.gerarUrlVisualizacaoSegura(chaveDecodificada);
 
+      // Redireciona
       return res.redirect(HttpStatus.FOUND, url);
     } catch (error) {
       return res.status(HttpStatus.NOT_FOUND).json({
