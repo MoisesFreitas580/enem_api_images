@@ -5,6 +5,6 @@ import { ImagesController } from './images.controller';
 @Module({
   controllers: [ImagesController],
   providers: [ImagesService],
-  exports: [ImagesService], // permite usar ImagesService em outros módulos (ex: ProdutosModule)
+  exports: [ImagesService], 
 })
 export class ImagesModule {}

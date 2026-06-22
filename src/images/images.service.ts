@@ -10,7 +10,6 @@ export class ImagesService {
   constructor() {
     this.bucketName = process.env.AWS_S3_BUCKET_NAME as string;
 
-    // Configuração de leitura mantida
     this.s3Client = new S3Client({
       endpoint: process.env.AWS_ENDPOINT_URL,
       region: process.env.AWS_DEFAULT_REGION || 'sjc',
@@ -22,15 +21,13 @@ export class ImagesService {
     });
   }
 
-  // Única função necessária: Buscar a URL da imagem pelo caminho exato
   async gerarUrlVisualizacaoSegura(key: string): Promise<string> {
     const command = new GetObjectCommand({
       Bucket: this.bucketName,
-      Key: key, // Aqui vai entrar: enem_2015/enem_d1/regular/question-14.png
+      Key: key, 
     });
 
     try {
-      // Retorna a URL temporária válida por 1 hora
       return await getSignedUrl(this.s3Client, command, { expiresIn: 3600 });
     } catch {
       throw new NotFoundException(`A imagem '${key}' não foi encontrada no bucket.`);
