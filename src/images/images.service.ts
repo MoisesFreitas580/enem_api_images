@@ -18,15 +18,15 @@ export class ImagesService {
   private readonly maxSize = 5 * 1024 * 1024; // 5MB
 
   constructor() {
-    this.bucketName = process.env.BUCKET_NAME as string;
+    // Nomes exatos das variáveis injetadas pelo Railway Bucket
+    this.bucketName = process.env.AWS_S3_BUCKET_NAME as string;
 
-    // Configuração correta para Railway Bucket (S3-compatible)
     this.s3Client = new S3Client({
-      endpoint: process.env.BUCKET_ENDPOINT,       // obrigatório no Railway
-      region: 'auto',                               // Railway ignora região, mas o SDK exige
+      endpoint: process.env.AWS_ENDPOINT_URL,
+      region: process.env.AWS_DEFAULT_REGION || 'sjc',
       credentials: {
-        accessKeyId: process.env.BUCKET_ACCESS_KEY_ID as string,
-        secretAccessKey: process.env.BUCKET_SECRET_ACCESS_KEY as string,
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
       },
       forcePathStyle: true, // obrigatório para provedores S3-compatible não-AWS
     });
