@@ -9,22 +9,14 @@ export class ImagesService {
 
   constructor() {
     this.bucketName = process.env.AWS_S3_BUCKET_NAME as string;
-
-    this.s3Client = new S3Client({
-      endpoint: process.env.AWS_ENDPOINT_URL,
-      region: process.env.AWS_DEFAULT_REGION || 'sjc',
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
-      },
-      forcePathStyle: true, 
-    });
+    this.s3Client = new S3Client({});
   }
 
   async gerarUrlVisualizacaoSegura(key: string): Promise<string> {
+    console.log(`Gerando URL segura para a imagem com chave: ${this.bucketName}/${key}`);
     const command = new GetObjectCommand({
       Bucket: this.bucketName,
-      Key: key, 
+      Key: key,
     });
 
     try {
