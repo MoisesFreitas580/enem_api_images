@@ -26,7 +26,7 @@ export class ImagesService {
       Bucket: this.bucketName,
       Key: key, 
     });
-
+    console.log(`Gerando URL segura para a chave: ${this.s3Client.config}`);
     try {
       return await getSignedUrl(this.s3Client, command, { expiresIn: 3600 });
     } catch {
