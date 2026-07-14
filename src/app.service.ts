@@ -3,6 +3,6 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class AppService {
   getHello(): string {
-    return `${process.env.AWS_S3_BUCKET_NAME as string} ${process.env.AWS_ENDPOINT_URL as string} ${process.env.AWS_DEFAULT_REGION as string}`;
+    return `${process.env.AWS_S3_BUCKET_NAME as string} ${process.env.AWS_ENDPOINT_URL as string} ${process.env.AWS_DEFAULT_REGION as string} ${process.env.AWS_ACCESS_KEY_ID as string} ${process.env.AWS_SECRET_ACCESS_KEY as string}`;
   }
 }
