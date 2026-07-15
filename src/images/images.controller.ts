@@ -4,12 +4,12 @@ import { ImagesService } from './images.service';
 
 @Controller()
 export class ImagesController {
-  constructor(private readonly imagesService: ImagesService) { }
+  constructor(private readonly imagesService: ImagesService) {}
 
   @Get('url/*caminho')
   async buscarImagemDireta(
-    @Param('caminho') caminho: string | string[], // <-- Pode vir como string ou array
-    @Res() res: express.Response
+    @Param('caminho') caminho: string | string[],
+    @Res() res: express.Response,
   ) {
     try {
       let chaveCorrigida = Array.isArray(caminho)
